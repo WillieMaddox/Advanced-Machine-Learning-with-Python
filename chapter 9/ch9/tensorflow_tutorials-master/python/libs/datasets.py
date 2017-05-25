@@ -15,10 +15,10 @@ def MNIST(one_hot=True):
         DataSet object w/ convenienve props for accessing
         train/validation/test sets and batches.
     """
-    return input_data.read_data_sets('MNIST_data/', one_hot=one_hot)
+    return input_data.read_data_sets('/media/RED6/DATA/MNIST', one_hot=one_hot)
 
 
 def CIFAR10():
     # plt.imshow(np.transpose(np.reshape(cifar.train.images[10], (3, 32, 32)), [1, 2, 0]))
-    Xs, ys = cifar10_load()
+    Xs, ys = cifar10_load(dst='/media/RED6/DATA/CIFAR-10/cifar-10-batches-py')
     return Dataset(Xs, ys)

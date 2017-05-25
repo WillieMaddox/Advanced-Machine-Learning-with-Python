@@ -5,6 +5,7 @@ Parag K. Mital, Jan 2016."""
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
+# plt.interactive(False)
 # %% tf.Graph represents a collection of tf.Operations
 # You can create operations by writing out equations.
 # By default, there is a graph: tf.get_default_graph()
@@ -36,15 +37,14 @@ x.eval()
 # We'll use our values from [-3, 3] to create a Gaussian Distribution
 sigma = 1.0
 mean = 0.0
-z = (tf.exp(tf.neg(tf.pow(x - mean, 2.0) /
-                   (2.0 * tf.pow(sigma, 2.0)))) *
-     (1.0 / (sigma * tf.sqrt(2.0 * 3.1415))))
+z = (tf.exp(tf.neg(tf.pow(x - mean, 2.0) / (2.0 * tf.pow(sigma, 2.0)))) * (1.0 / (sigma * tf.sqrt(2.0 * 3.1415))))
 
 # %% By default, new operations are added to the default Graph
 assert z.graph is tf.get_default_graph()
 
 # %% Execute the graph and plot the result
 plt.plot(z.eval())
+plt.show()
 
 # %% We can find out the shape of a tensor like so:
 print(z.get_shape())
@@ -67,12 +67,14 @@ z_2d = tf.matmul(tf.reshape(z, [n_values, 1]), tf.reshape(z, [1, n_values]))
 
 # %% Execute the graph and store the value that `out` represents in `result`.
 plt.imshow(z_2d.eval())
+plt.show()
 
 # %% For fun let's create a gabor patch:
 x = tf.reshape(tf.sin(tf.linspace(-3.0, 3.0, n_values)), [n_values, 1])
 y = tf.reshape(tf.ones_like(x), [1, n_values])
 z = tf.mul(tf.matmul(x, y), z_2d)
 plt.imshow(z.eval())
+plt.show()
 
 # %% We can also list all the operations of a graph:
 ops = tf.get_default_graph().get_operations()
@@ -93,6 +95,7 @@ def gabor(n_values=32, sigma=1.0, mean=0.0):
 
 # %% Confirm this does something:
 plt.imshow(gabor().eval())
+plt.show()
 
 # %% And another function which can convolve
 def convolve(img, W):
@@ -124,6 +127,7 @@ def convolve(img, W):
 from skimage import data
 img = data.astronaut()
 plt.imshow(img)
+plt.show()
 print(img.shape)
 
 # %% Now create a placeholder for our graph which can store any input:
@@ -135,3 +139,4 @@ out = convolve(x, gabor())
 # %% Now send the image into the graph and compute the result
 result = tf.squeeze(out).eval(feed_dict={x: img})
 plt.imshow(result)
+plt.show()

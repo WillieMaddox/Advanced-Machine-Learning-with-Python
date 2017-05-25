@@ -7,7 +7,7 @@ import tensorflow as tf
 from libs.connections import conv2d, linear
 from collections import namedtuple
 from math import sqrt
-
+import time
 
 # %%
 def residual_network(x, n_outputs,
@@ -52,19 +52,15 @@ def residual_network(x, n_outputs,
 
     # %%
     # First convolution expands to 64 channels and downsamples
-    net = conv2d(x, 64, k_h=7, k_w=7,
-                 name='conv1',
-                 activation=activation)
+    net = conv2d(x, 64, k_h=7, k_w=7, name='conv1', activation=activation)
 
     # %%
     # Max pool and downsampling
-    net = tf.nn.max_pool(
-        net, [1, 3, 3, 1], strides=[1, 2, 2, 1], padding='SAME')
+    net = tf.nn.max_pool(net, [1, 3, 3, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     # %%
     # Setup first chain of resnets
-    net = conv2d(net, blocks[0].num_filters, k_h=1, k_w=1,
-                 stride_h=1, stride_w=1, padding='VALID', name='conv2')
+    net = conv2d(net, blocks[0].num_filters, k_h=1, k_w=1, stride_h=1, stride_w=1, padding='VALID', name='conv2')
 
     # %%
     # Loop through all res blocks
@@ -118,7 +114,7 @@ def test_mnist():
     """Test the resnet on MNIST."""
     import tensorflow.examples.tutorials.mnist.input_data as input_data
 
-    mnist = input_data.read_data_sets('MNIST_data/', one_hot=True)
+    mnist = input_data.read_data_sets('/media/RED6/DATA/MNIST', one_hot=True)
     x = tf.placeholder(tf.float32, [None, 784])
     y = tf.placeholder(tf.float32, [None, 10])
     y_pred = residual_network(x, 10)
@@ -137,15 +133,14 @@ def test_mnist():
     sess.run(tf.initialize_all_variables())
 
     # %% We'll train in minibatches and report accuracy:
-    batch_size = 50
-    n_epochs = 5
+    batch_size = 100
+    n_epochs = 10
     for epoch_i in range(n_epochs):
         # Training
         train_accuracy = 0
         for batch_i in range(mnist.train.num_examples // batch_size):
             batch_xs, batch_ys = mnist.train.next_batch(batch_size)
-            train_accuracy += sess.run([optimizer, accuracy], feed_dict={
-                x: batch_xs, y: batch_ys})[1]
+            train_accuracy += sess.run([optimizer, accuracy], feed_dict={x: batch_xs, y: batch_ys})[1]
         train_accuracy /= (mnist.train.num_examples // batch_size)
 
         # Validation
@@ -158,9 +153,10 @@ def test_mnist():
                                            y: batch_ys
                                        })
         valid_accuracy /= (mnist.validation.num_examples // batch_size)
-        print('epoch:', epoch_i, ', train:',
-              train_accuracy, ', valid:', valid_accuracy)
+        print('epoch:', epoch_i, ', train:', train_accuracy, ', valid:', valid_accuracy)
 
 
 if __name__ == '__main__':
+    t0 = time.time()
     test_mnist()
+    print(time.time() - t0)

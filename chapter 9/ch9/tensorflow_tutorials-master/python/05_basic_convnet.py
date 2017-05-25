@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 # %% Setup input to the network and true output label.  These are
 # simply placeholders which we'll fill in later.
-mnist = input_data.read_data_sets('MNIST_data/', one_hot=True)
+mnist = input_data.read_data_sets('/media/RED6/DATA/MNIST', one_hot=True)
 x = tf.placeholder(tf.float32, [None, 784])
 y = tf.placeholder(tf.float32, [None, 10])
 
@@ -91,8 +91,7 @@ n_epochs = 5
 for epoch_i in range(n_epochs):
     for batch_i in range(mnist.train.num_examples // batch_size):
         batch_xs, batch_ys = mnist.train.next_batch(batch_size)
-        sess.run(optimizer, feed_dict={
-            x: batch_xs, y: batch_ys, keep_prob: 0.5})
+        sess.run(optimizer, feed_dict={x: batch_xs, y: batch_ys, keep_prob: 0.5})
     print(sess.run(accuracy,
                    feed_dict={
                        x: mnist.validation.images,
@@ -103,3 +102,4 @@ for epoch_i in range(n_epochs):
 # %% Let's take a look at the kernels we've learned
 W = sess.run(W_conv1)
 plt.imshow(montage(W / np.max(W)), cmap='coolwarm')
+plt.waitforbuttonpress()

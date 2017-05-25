@@ -107,11 +107,11 @@ def test_mnist():
 
     # %%
     # load MNIST as before
-    mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
+    mnist = input_data.read_data_sets('/media/RED6/DATA/MNIST', one_hot=True)
     ae = VAE()
 
     # %%
-    learning_rate = 0.001
+    learning_rate = 0.0001
     optimizer = tf.train.AdamOptimizer(learning_rate).minimize(ae['cost'])
 
     # %%
@@ -133,11 +133,11 @@ def test_mnist():
     for epoch_i in range(n_epochs):
         print('--- Epoch', epoch_i)
         train_cost = 0
+        num_batches = mnist.train.num_examples // batch_size
         for batch_i in range(mnist.train.num_examples // batch_size):
             batch_xs, _ = mnist.train.next_batch(batch_size)
-            train_cost += sess.run([ae['cost'], optimizer],
-                                   feed_dict={ae['x']: batch_xs})[0]
-            if batch_i % 2 == 0:
+            train_cost += sess.run([ae['cost'], optimizer], feed_dict={ae['x']: batch_xs})[0]
+            if batch_i % 50 == 0:
                 # %%
                 # Plot example reconstructions from latent layer
                 imgs = []
@@ -153,16 +153,10 @@ def test_mnist():
                 # %%
                 # Plot example reconstructions
                 recon = sess.run(ae['y'], feed_dict={ae['x']: test_xs})
-                print(recon.shape)
+                print(t_i, batch_i, num_batches, recon.shape)
                 for example_i in range(n_examples):
-                    axs_reconstruction[0][example_i].imshow(
-                        np.reshape(test_xs[example_i, :], (28, 28)),
-                        cmap='gray')
-                    axs_reconstruction[1][example_i].imshow(
-                        np.reshape(
-                            np.reshape(recon[example_i, ...], (784,)),
-                            (28, 28)),
-                        cmap='gray')
+                    axs_reconstruction[0][example_i].imshow(np.reshape(test_xs[example_i, :], (28, 28)), cmap='gray')
+                    axs_reconstruction[1][example_i].imshow(np.reshape(np.reshape(recon[example_i, ...], (784,)), (28, 28)), cmap='gray')
                     axs_reconstruction[0][example_i].axis('off')
                     axs_reconstruction[1][example_i].axis('off')
                 fig_reconstruction.savefig('reconstruction_%08d.png' % t_i)
@@ -171,8 +165,7 @@ def test_mnist():
                 # Plot manifold of latent layer
                 zs = sess.run(ae['z'], feed_dict={ae['x']: xs})
                 ax_image_manifold.clear()
-                ax_image_manifold.scatter(zs[:, 0], zs[:, 1],
-                    c=np.argmax(ys, 1), alpha=0.2)
+                ax_image_manifold.scatter(zs[:, 0], zs[:, 1], color=np.argmax(ys, 1), alpha=0.2)
                 ax_image_manifold.set_xlim([-6, 6])
                 ax_image_manifold.set_ylim([-6, 6])
                 ax_image_manifold.axis('off')
@@ -180,17 +173,14 @@ def test_mnist():
 
                 t_i += 1
 
-
-        print('Train cost:', train_cost /
-              (mnist.train.num_examples // batch_size))
+        print('Train cost:', train_cost / (mnist.train.num_examples // batch_size))
 
         valid_cost = 0
         for batch_i in range(mnist.validation.num_examples // batch_size):
             batch_xs, _ = mnist.validation.next_batch(batch_size)
-            valid_cost += sess.run([ae['cost']],
-                                   feed_dict={ae['x']: batch_xs})[0]
-        print('Validation cost:', valid_cost /
-              (mnist.validation.num_examples // batch_size))
+            valid_cost += sess.run([ae['cost']], feed_dict={ae['x']: batch_xs})[0]
+
+        print('Validation cost:', valid_cost / (mnist.validation.num_examples // batch_size))
 
 
 if __name__ == '__main__':

@@ -67,8 +67,6 @@ def montage(W):
     return m
 
 
-
-
 # %%
 def corrupt(x):
     """Take an input tensor and add uniform masking.

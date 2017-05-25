@@ -63,9 +63,7 @@ with tf.Session() as sess:
         print(training_cost)
 
         if epoch_i % 100 == 0:
-            ax.plot(xs, Y_pred.eval(
-                feed_dict={X: xs}, session=sess),
-                    'k', alpha=epoch_i / n_epochs)
+            ax.plot(xs, Y_pred.eval(feed_dict={X: xs}, session=sess), 'k', alpha=epoch_i / n_epochs)
             fig.show()
             plt.draw()
 

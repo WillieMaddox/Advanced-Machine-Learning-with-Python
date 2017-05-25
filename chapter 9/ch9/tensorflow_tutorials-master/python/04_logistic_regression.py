@@ -61,16 +61,14 @@ cross_entropy = -tf.reduce_sum(y_true * tf.log(net_output))
 
 # %% This would equate each label in our one-hot vector between the
 # prediction and actual using the argmax as the predicted label
-correct_prediction = tf.equal(
-    tf.argmax(net_output, 1), tf.argmax(y_true, 1))
+correct_prediction = tf.equal(tf.argmax(net_output, 1), tf.argmax(y_true, 1))
 
 # %% And now we can look at the mean of our network's correct guesses
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
 
 # %% We can tell the tensorflow graph to train w/ gradient descent using
 # our loss function and an input learning rate
-optimizer = tf.train.GradientDescentOptimizer(
-    0.01).minimize(cross_entropy)
+optimizer = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
 
 # %% We now create a new session to actually perform the initialization the
 # variables:

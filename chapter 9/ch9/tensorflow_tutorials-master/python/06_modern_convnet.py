@@ -5,9 +5,7 @@ Parag K. Mital, Jan 2016.
 """
 # %%
 import tensorflow as tf
-from libs.batch_norm import batch_norm
-from libs.activations import lrelu
-from libs.connections import conv2d, linear
+from libs.connections import batch_norm, lrelu, conv2d, linear
 from libs.datasets import MNIST
 
 
@@ -59,8 +57,7 @@ batch_size = 100
 for epoch_i in range(n_epochs):
     for batch_i in range(mnist.train.num_examples // batch_size):
         batch_xs, batch_ys = mnist.train.next_batch(batch_size)
-        sess.run(train_step, feed_dict={
-            x: batch_xs, y: batch_ys, is_training: True})
+        sess.run(train_step, feed_dict={x: batch_xs, y: batch_ys, is_training: True})
     print(sess.run(accuracy,
                    feed_dict={
                        x: mnist.validation.images,

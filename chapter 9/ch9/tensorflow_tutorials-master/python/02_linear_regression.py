@@ -60,14 +60,11 @@ with tf.Session() as sess:
         for (x, y) in zip(xs, ys):
             sess.run(optimizer, feed_dict={X: x, Y: y})
 
-        training_cost = sess.run(
-            cost, feed_dict={X: xs, Y: ys})
+        training_cost = sess.run(cost, feed_dict={X: xs, Y: ys})
         print(training_cost)
 
         if epoch_i % 20 == 0:
-            ax.plot(xs, Y_pred.eval(
-                feed_dict={X: xs}, session=sess),
-                    'k', alpha=epoch_i / n_epochs)
+            ax.plot(xs, Y_pred.eval(feed_dict={X: xs}, session=sess), 'k', alpha=epoch_i / n_epochs)
             fig.show()
             plt.draw()
 
